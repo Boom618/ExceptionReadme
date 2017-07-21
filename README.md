@@ -35,10 +35,10 @@ Android 中一种常见情形就是上拉刷新中 header 也会作为 listview 
 >例1：IllegalStateException: Can not perform this action after onSaveInstanceState(在onSaveInstanceState之后无法执行此操作)
 
 >**错误原因**：
->该异常表示，当前对客户端的响应已经结束，不能在响应已经结束（或说消亡）后再向客户端（实际上是缓冲区）输出任何内容。Object is no longer valid to operate on. Was it deleted by another thread?该异常表示，realmObject对象在其他线程已被删除，在这个线程中使用的时候抛出的异常。
+>该异常表示，当前对客户端的响应已经结束，不能在响应已经结束（或说消亡）后再向客户端（实际上是缓冲区）输出任何内容。Object is no longer valid to operate on. Was it deleted by another thread? 该异常表示，realmObject 对象在其他线程已被删除，在这个线程中使用的时候抛出的异常。
 >
 >**解决方法**：
-onSaveInstanceState方法是在该Activity即将被销毁前调用，来保存Activity数据的，如果在保存玩状态后再给它添加Fragment就会出错。解决办法就是把commit（）方法替换成 commitAllowingStateLoss()
+onSaveInstanceState 方法是在该 Activity 即将被销毁前调用，来保存 Activity 数据的，如果在保存玩状态后再给它添加 Fragment 就会出错。解决办法就是把 commit（）方法替换成 commitAllowingStateLoss()
 
 >**具体分析**：
 >首先解释下flush()，我们知道在使用读写流的时候数据先被读入内存这个缓冲区中， 然后再写入文件，但是当数据读完时不代表数据已经写入文件完毕，因为可能还有一部分仍未写入文件而留在内存中，这时调用 flush() 方法就会把缓冲区的数据强行清空输出，因此 flush() 的作用就是保证缓存清空输出。response 是服务端对客户端请求的一个响应，其中封装了响应头、状态码、内容等，服务端在把 response 提交到客户端之前，会向缓冲区内写入响应头和状态码，然后将所有内容 flush。这就标志着该次响应已经 committed。对于当前页面中已经 committed 的 response，就不能再使用这个 response 向缓冲区写任何东西（注：同一个页面中的 response.XXX()是同一个 response 的不同方法，只要其中一个已经导致了 committed，那么其它类似方式的调用都会导致 IllegalStateException 异常）。
@@ -48,7 +48,7 @@ onSaveInstanceState方法是在该Activity即将被销毁前调用，来保存Ac
 Can't change tag of fragment d{e183845 #0 d{e183845}}: was d{e183845} now d{e183845 #0 d{e183845}}
 
 >**错误原因**：
-经查，我在显示fragment的代码中使用了fragment.show(getSupportFragmentManager, fragment.toString())
+经查，我在显示 fragment 的代码中使用了 fragment.show(getSupportFragmentManager, fragment.toString())
 而这里是因为两次 toString()结果不同，导致不同的 tag 指向的是同一个 fragment。
 
 >**解决方法**：
@@ -87,7 +87,7 @@ Can't change tag of fragment d{e183845 #0 d{e183845}}: was d{e183845} now d{e183
 ## java.util.concurrent.TimeoutException
 >**异常描述**：该异常表示调用超时。
 >
->**解决思路**：一般是系统在gc时，调用对象的 finalize 超时导致，
+>**解决思路**：一般是系统在 gc 时，调用对象的 finalize 超时导致，
 >
 >**解决方法**：
 >
@@ -103,7 +103,7 @@ Can't change tag of fragment d{e183845 #0 d{e183845}}: was d{e183845} now d{e183
 >
 * 要找的 Class 被混淆了，存在但名字变了。
 * 要找的 Class 未被打入 Dex，确实不存在，可能是因为自己的疏忽，或编译环境的冲突。
-* 要找的 Class 确实存在，但你的 Classlorder 找不到这个 Class，往往因为这个Classloder 是你自实现的（插件化应用中常见）。
+* 要找的 Class 确实存在，但你的 Classlorder 找不到这个 Class，往往因为这个 Classloder 是你自实现的（插件化应用中常见）。
 
 ## java.lang.SecurityException
 >**异常描述**：权限异常
@@ -124,8 +124,8 @@ Can't change tag of fragment d{e183845 #0 d{e183845}}: was d{e183845} now d{e183
 >
 * 适当调整图像大小。
 * 采用合适的缓存策略。
-* 采用低内存占用量的编码方式，比如 Bitmap.Config.ARGB__4444_ 比Bitmap.Config.ARGB_8888 更省内存。
-* 及时回收Bitmap。
+* 采用低内存占用量的编码方式，比如 Bitmap.Config.ARGB_4444 比 Bitmap.Config.ARGB_8888 更省内存。
+* 及时回收 Bitmap。
 * 不要在循环中创建过多的本地变量。
 * 自定义对内存分配大小。
 * 特殊情况可在 mainfests 的 Application 中增加 android:largeHeap="true" 属性，比如临时创建多个小图片(地图 marker )
