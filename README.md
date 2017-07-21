@@ -3,7 +3,6 @@
 
 ## java.util.ConcurrentModificationException
 >**异常描述**：该异常表示并发修改异常.迭代器迭代过程中，迭代的对象发生了改变，如数据项增加或删除.
->com.czcg.gwt.util.LogOut.exitAll(LogOut.java:72)
 
 >**解决思路**：由于迭代对象不是线程安全，在迭代的过程中，会检查 modCount 是否和初始 modCount 即 expectedModCount 一致，如果不一致，则认为数据有变化，迭代终止并抛出异常。常出现的场景是，两个线程同时对集合进行操作，线程 1 对集合进行遍历，而线程 2 对集合进行增加、删除操作，此时将会发生 ConcurrentModificationException 异常。
 
@@ -68,10 +67,10 @@ Can't change tag of fragment d{e183845 #0 d{e183845}}: was d{e183845} now d{e183
 >
 >**解决方法**：常见于：
 >
-* Activity、Service状态异常
+* Activity、Service 状态异常
 * 非法URL
 * UI线程操作
-* Fragment中嵌套了子Fragment，Fragment 被销毁，而内部 Fragment 未被销毁，所以导致再次加载时重复，在 onDestroyView() 中将内部 Fragment 销毁即可
+* Fragment中嵌套了子 Fragment，Fragment 被销毁，而内部 Fragment 未被销毁，所以导致再次加载时重复，在 onDestroyView() 中将内部 Fragment 销毁即可
 * 在请求网络的回调中使用了glide.into(view),view 已经被销毁会导致该错误
 
 ## android.os.DeadObjectException
@@ -120,7 +119,7 @@ Can't change tag of fragment d{e183845 #0 d{e183845}}: was d{e183845} now d{e183
 >
 >**解决思路**：
 >
->**解决方法**：OOM 就是内存溢出，即 Out of Memory。也就是说内存占有量超过了 VM 所分配的最大。怎么解决 OOM，通常 OOM 都发生在需要用到大量内存的情况下（创建或解析Bitmap，分配特大的数组等），这里列举常见避免 OOM 的几个注意点：
+>**解决方法**：OOM 就是内存溢出，即 Out of Memory。也就是说内存占有量超过了 VM 所分配的最大。怎么解决 OOM，通常 OOM 都发生在需要用到大量内存的情况下（创建或解析 Bitmap，分配特大的数组等），这里列举常见避免 OOM 的几个注意点：
 >
 * 适当调整图像大小。
 * 采用合适的缓存策略。
@@ -136,7 +135,7 @@ Can't change tag of fragment d{e183845 #0 d{e183845}}: was d{e183845} now d{e183
 >**解决思路**：
 >
 * 首先我们对 Android N及以上做判断.
-* 然后添加flags，表明我们要被授予什么样的临时权限.
+* 然后添加 flags，表明我们要被授予什么样的临时权限.
 * BuildConfig.APPLICATION_ID 直接获取的是应用的包名.
 >
->**解决方法**：对于面向 Android N (7.x) 的应用，Android 框架执行的 StrictMode API 政策禁止向您的应用外公开 file:// url。 如果一项包含文件 URI 的 Intent 离开您的应用，应用失败，并出现 FileUriExposedException 异常。若要在应用间共享文件，您应发送一项 content:// URI，并授予 URI 临时访问权限。 进行此授权的最简单方式是使用 FileProvider 类。[参考](http://www.cnblogs.com/yongdaimi/p/6067319.html)
+>**解决方法**：对于面向 Android N (7.x) 的应用，Android 框架执行的 StrictMode API 政策禁止向您的应用外公开 file://URI。 如果一项包含文件 URI 的 Intent 离开您的应用，应用失败，并出现 FileUriExposedException 异常。若要在应用间共享文件，您应发送一项 content://URI，并授予 URI 临时访问权限。 进行此授权的最简单方式是使用 FileProvider 类。[参考](http://www.cnblogs.com/yongdaimi/p/6067319.html)
